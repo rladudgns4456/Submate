@@ -16,3 +16,11 @@ CREATE TABLE products (
     status VARCHAR(20) NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
+
+CREATE TABLE notices (
+    notice_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
+);

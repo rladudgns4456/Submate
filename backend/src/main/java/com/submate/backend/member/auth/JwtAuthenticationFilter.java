@@ -1,5 +1,7 @@
 package com.submate.backend.member.auth;
 
+import com.submate.backend.member.Member;
+import com.submate.backend.member.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(
@@ -37,19 +40,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwtProvider.validateToken(token)) {
 
                 String email = jwtProvider.getEmail(token);
-                String role = jwtProvider.getRole(token);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                List.of(
-                                        new SimpleGrantedAuthority("ROLE_" + role)
-                                )
-                        );
+                Member member = memberRepository.findByEmail(email)
+                        .orElse(null);
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+                if (member != null && "ACTIVE".equals(member.getStatus())) {
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    member.getEmail(),
+                                    null,
+                                    List.of(
+                                            new SimpleGrantedAuthority(
+                                                    "ROLE_" + member.getRole()
+                                            )
+                                    )
+                            );
+
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authentication);
+                }
             }
         }
 

@@ -11,6 +11,8 @@ import com.submate.backend.member.dto.ChangePasswordRequest;
 import com.submate.backend.member.dto.AdminMemberResponse;
 import java.util.List;
 import com.submate.backend.member.dto.AdminMemberUpdateRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -41,27 +43,38 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public String login(LoginRequest request) {
+public String login(LoginRequest request) {
 
-        Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.")
-                );
-
-        if (!passwordEncoder.matches(
-                request.password(),
-                member.getPassword()
-        )) {
-            throw new IllegalArgumentException(
-                    "이메일 또는 비밀번호가 올바르지 않습니다."
+    Member member = memberRepository.findByEmail(request.email())
+            .orElseThrow(() ->
+                    new ResponseStatusException(
+                            HttpStatus.UNAUTHORIZED,
+                            "이메일 또는 비밀번호가 올바르지 않습니다."
+                    )
             );
-        }
 
-        return jwtProvider.createToken(
-                member.getEmail(),
-                member.getRole()
+    if ("WITHDRAWN".equals(member.getStatus())) {
+        throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,
+                "탈퇴한 회원은 로그인할 수 없습니다."
         );
     }
+
+    if (!passwordEncoder.matches(
+            request.password(),
+            member.getPassword()
+    )) {
+        throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,
+                "이메일 또는 비밀번호가 올바르지 않습니다."
+        );
+    }
+
+    return jwtProvider.createToken(
+            member.getEmail(),
+            member.getRole()
+    );
+}
 
     @Transactional(readOnly = true)
 public Member getMyInfo(String email) {

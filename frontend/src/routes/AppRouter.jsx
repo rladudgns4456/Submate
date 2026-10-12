@@ -15,6 +15,8 @@ import PaymentPage from '../pages/payment/PaymentPage'
 import PaymentResultPage from '../pages/payment/PaymentResultPage'
 import PaymentsPage from '../pages/payment/PaymentsPage'
 import RefundsPage from '../pages/admin/RefundsPage'
+import NoticesPage from '../pages/notice/NoticesPage'
+import NoticeDetailPage from '../pages/notice/NoticeDetailPage'
 
 function PrivateRoute({ admin = false }) {
   const { session } = useAuth()
@@ -36,6 +38,9 @@ export default function AppRouter() {
       <Routes>
         <Route element={<SubscriptionLayout />}>
           <Route path="/login" element={<ConnectionPage />} />
+
+          <Route path="/notices" element={<NoticesPage />} />
+          <Route path="/notices/:id" element={<NoticeDetailPage />} />
           <Route element={<PrivateRoute />}>
             <Route index element={<Navigate to="/subscriptions" replace />} />
             <Route

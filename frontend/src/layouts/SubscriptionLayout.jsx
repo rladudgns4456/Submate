@@ -22,6 +22,9 @@ export default function SubscriptionLayout() {
           <NavLink to="/refunds">
             <span>↩</span>환불 내역
           </NavLink>
+          <NavLink to="/notices">
+          <span>📢</span>공지사항
+          </NavLink>
         </nav>
         {session?.role === 'ADMIN' && (
           <>

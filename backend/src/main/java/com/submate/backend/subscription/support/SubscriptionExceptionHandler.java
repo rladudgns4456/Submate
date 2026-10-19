@@ -11,8 +11,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice(basePackages = {
-        "com.submate.backend.subscription", "com.submate.backend.payment",
-        "com.submate.backend.refund", "com.submate.backend.admin.subscription"})
+        "com.submate.backend.subscription",
+        "com.submate.backend.payment",
+        "com.submate.backend.refund",
+        "com.submate.backend.admin.subscription",
+        "com.submate.backend.admin.member",
+        "com.submate.backend.product"
+})
 public class SubscriptionExceptionHandler {
     public record ErrorResponse(int status, String message) {}
     @ExceptionHandler(DomainException.class)

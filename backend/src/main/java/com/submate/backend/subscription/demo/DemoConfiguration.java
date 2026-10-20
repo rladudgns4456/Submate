@@ -20,7 +20,7 @@ public class DemoConfiguration {
     @Bean
     public UserDetailsService demoUsers(@Value("${SUBMATE_DEMO_PASSWORD}") String password) {
         if (password.length() < 12) throw new IllegalArgumentException("SUBMATE_DEMO_PASSWORD는 12자 이상이어야 합니다.");
-        String encoded = "{bcrypt}" + new BCryptPasswordEncoder().encode(password);
+        String encoded = new BCryptPasswordEncoder().encode(password);
         return new InMemoryUserDetailsManager(
                 User.withUsername("user@submate.test").password(encoded).roles("USER").build(),
                 User.withUsername("other@submate.test").password(encoded).roles("USER").build(),

@@ -19,7 +19,7 @@ public class RefundController {
     }
     @GetMapping
     public PageResponse<RefundResponse> list(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "20") int size) {
+                                            @RequestParam(defaultValue = "20") int size) {
         return refunds.list(current.memberId(), page, size);
     }
 }

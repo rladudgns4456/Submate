@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: import.meta.env?.VITE_API_BASE_URL || '/api',
   timeout: 15000,
 })
 let authorization = null
@@ -10,7 +10,9 @@ export function setAuthorization(value) {
   authorization = value
 }
 api.interceptors.request.use((config) => {
-  if (authorization) config.headers.Authorization = authorization
+  if (config.skipAuthorization) delete config.headers.Authorization
+  else if (authorization && !config.headers.Authorization)
+    config.headers.Authorization = authorization
   return config
 })
 export function errorMessage(error) {

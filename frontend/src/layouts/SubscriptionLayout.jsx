@@ -7,12 +7,15 @@ export default function SubscriptionLayout() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <NavLink className="brand" to="/subscriptions">
+        <NavLink className="brand" to="/products">
           <span className="brand-symbol">s</span>SubMate
           <span className="brand-dot">.</span>
         </NavLink>
         <p className="nav-label">MY SPACE</p>
         <nav aria-label="사용자 메뉴">
+          <NavLink to="/products">
+            <span>◈</span>구독 상품
+          </NavLink>
           <NavLink to="/subscriptions">
             <span>▦</span>내 구독
           </NavLink>
@@ -48,9 +51,14 @@ export default function SubscriptionLayout() {
           <div>
             <span className="account">{session?.email}</span>
             {session && (
-              <button className="text-button" onClick={logout}>
+              <button className="text-button" onClick={() => logout()}>
                 로그아웃
               </button>
+            )}
+            {!session && (
+              <NavLink className="auth-link" to="/login">
+                로그인
+              </NavLink>
             )}
           </div>
         </header>

@@ -1,5 +1,19 @@
 # 구독·결제·환불 API
 
+## 회원·상품 Frontend 연결 확인 — 2026-10-20
+
+현재 병합된 Backend와 연결한 실제 경로입니다. 아래 거래 계약을 변경하지 않습니다.
+
+| Method | 경로 | 요청/응답 |
+|---|---|---|
+| POST | /api/auth/signup | {email,password} → {message,memberId} |
+| POST | /api/auth/login | {email,password} → {message,token} |
+| GET | /api/auth/me | Bearer token → {memberId,email,role} |
+| GET | /api/categories | 카테고리 배열 [{categoryId,name}] |
+| GET | /api/products?categoryId=1 | 상품 배열 [{productId,categoryId,categoryName,name,price,billingCycle,status}] |
+
+회원 가입/로그인 성공은 현재 200입니다. Frontend는 token을 받은 뒤 /auth/me로 권한을 확인하고 accessToken 세션 규약으로 변환합니다. 상품 목록은 거래 목록의 PageResponse와 다른 배열 응답입니다. 실제 로그인·상품 선택·거래 연결은 별도 H2/일반 JWT 환경에서 확인했고 실제 MySQL은 후속 검증입니다.
+
 ## 공통 규칙
 
 - Base URL: /api

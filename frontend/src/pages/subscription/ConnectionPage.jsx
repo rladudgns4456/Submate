@@ -3,6 +3,8 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { isDemo } from '../../context/authState'
 import { errorMessage } from '../../api/axios'
+import AuthPage from '../auth/AuthPage'
+import { afterLoginPath } from '../../utils/authNavigation'
 
 export default function ConnectionPage() {
   const { session, demoLogin } = useAuth()
@@ -11,7 +13,7 @@ export default function ConnectionPage() {
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  if (session) return <Navigate to={state?.from || '/subscriptions'} replace />
+  if (session) return <Navigate to={afterLoginPath(state?.from)} replace />
   async function handleLogin(event) {
     event.preventDefault()
     setBusy(true)
@@ -25,14 +27,7 @@ export default function ConnectionPage() {
       setBusy(false)
     }
   }
-  if (!isDemo)
-    return (
-      <section className="panel login">
-        <p className="eyebrow">SUBMATE</p>
-        <h1>로그인이 필요해요</h1>
-        <p>회원 인증 연결 후 구독 서비스를 이용할 수 있습니다.</p>
-      </section>
-    )
+  if (!isDemo) return <AuthPage />
   return (
     <form className="panel login" onSubmit={handleLogin}>
       <p className="eyebrow">SUBMATE / LOCAL DEMO</p>

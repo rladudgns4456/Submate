@@ -139,21 +139,19 @@ public AdminMemberResponse updateMemberForAdmin(
                     new IllegalArgumentException("회원을 찾을 수 없습니다.")
             );
 
-    if (!member.getEmail().equals(request.email())
-            && memberRepository.existsByEmail(request.email())) {
-        throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+    if (!member.getEmail().equals(request.email())) {
+        throw new IllegalArgumentException(
+                "회원 이메일은 변경할 수 없습니다."
+        );
     }
 
-    member.changeEmail(request.email());
-
     return new AdminMemberResponse(
-        member.getMemberId(),
-        member.getEmail(),
-        member.getRole(),
-        member.getStatus()
-);
+            member.getMemberId(),
+            member.getEmail(),
+            member.getRole(),
+            member.getStatus()
+    );
 }
-@Transactional
 public AdminMemberResponse withdrawMemberForAdmin(Long memberId) {
 
     Member member = memberRepository.findById(memberId)

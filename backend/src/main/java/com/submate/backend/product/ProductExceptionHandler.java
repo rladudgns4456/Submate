@@ -4,16 +4,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackages = {
-        "com.submate.backend.product",
-        "com.submate.backend.admin.product"
-})
+@RestControllerAdvice(basePackages = "com.submate.backend.product")
 public class ProductExceptionHandler {
 
     public record ErrorResponse(
             int status,
             String message
     ) {
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> notFound(
+            ResourceNotFoundException ex
+    ) {
+        return ResponseEntity
+                .status(404)
+                .body(new ErrorResponse(
+                        404,
+                        ex.getMessage()
+                ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

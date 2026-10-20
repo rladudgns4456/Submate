@@ -1,4 +1,4 @@
-package com.submate.backend.admin.product.controller;
+package com.submate.backend.product.controller;
 
 import com.submate.backend.subscription.support.CurrentMember;
 import com.submate.backend.product.ProductService;

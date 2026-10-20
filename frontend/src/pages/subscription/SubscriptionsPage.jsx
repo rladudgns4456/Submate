@@ -33,9 +33,16 @@ export default function SubscriptionsPage({ admin = false }) {
             이용 중인 서비스를 확인하고, 필요한 순간에 관리하세요.
           </p>
         </div>
-        <button className="secondary" onClick={resource.reload}>
-          새로고침
-        </button>
+        <div className="actions">
+          {!admin && (
+            <Link className="button primary" to="/products">
+              상품 선택
+            </Link>
+          )}
+          <button className="secondary" onClick={resource.reload}>
+            새로고침
+          </button>
+        </div>
       </header>
       {!admin && isDemo && (
         <section className="demo-products" aria-label="데모 구독 상품">

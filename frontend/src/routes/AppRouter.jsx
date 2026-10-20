@@ -15,12 +15,21 @@ import PaymentPage from '../pages/payment/PaymentPage'
 import PaymentResultPage from '../pages/payment/PaymentResultPage'
 import PaymentsPage from '../pages/payment/PaymentsPage'
 import RefundsPage from '../pages/admin/RefundsPage'
+import AuthPage from '../pages/auth/AuthPage'
+import ProductSelectionPage from '../pages/payment/ProductSelectionPage'
+import { isDemo } from '../context/authState'
 
 function PrivateRoute({ admin = false }) {
   const { session } = useAuth()
   const location = useLocation()
   if (!session)
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location.pathname + location.search }}
+        replace
+      />
+    )
   if (admin && session.role !== 'ADMIN')
     return (
       <section className="panel">
@@ -36,8 +45,21 @@ export default function AppRouter() {
       <Routes>
         <Route element={<SubscriptionLayout />}>
           <Route path="/login" element={<ConnectionPage />} />
+          <Route
+            path="/signup"
+            element={
+              isDemo ? (
+                <Navigate to="/login" replace />
+              ) : (
+                <AuthPage key="signup" signup />
+              )
+            }
+          />
+          <Route index element={<Navigate to="/products" replace />} />
+          <Route element={isDemo ? <PrivateRoute /> : <Outlet />}>
+            <Route path="/products" element={<ProductSelectionPage />} />
+          </Route>
           <Route element={<PrivateRoute />}>
-            <Route index element={<Navigate to="/subscriptions" replace />} />
             <Route
               path="/subscriptions"
               element={<SubscriptionsPage key="user" />}

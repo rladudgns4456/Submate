@@ -10,7 +10,9 @@ React + Vite / Spring Boot / MySQL 기반 2인 팀 구독 관리 프로젝트입
 - 사용자/관리자 화면과 API 연동
 - 권한·동시성·경계 날짜·트랜잭션 통합 테스트
 
-회원가입·JWT·상품 CRUD는 김현빈 담당 연결 대상으로 남아 있습니다.
+회원·JWT·상품·카테고리 Backend가 병합되어 있습니다. Frontend는 실제 회원가입/로그인과 상품 선택을 기존 구독·결제 화면에 연결합니다. 강의·수강 권한·학습 진도는 후속 작업입니다.
+
+실제 인증 모드에서는 `/products`에서 상품을 선택한 뒤 `/login` 또는 `/signup`으로 연결됩니다. 로그인 응답의 `token`과 `/api/auth/me`를 공통 세션에 연결하며, 인증 정보는 메모리에만 보관합니다. 새로고침하면 다시 로그인합니다.
 
 ## 로컬 데모 실행
 
@@ -60,13 +62,12 @@ npm run dev -- --port 5173 --strictPort
 1. 실제 members/products 테이블을 먼저 준비합니다.
 2. backend/src/main/resources/db/subscription-schema.sql을 검토하고 최초 한 번 적용합니다.
 3. DB_USERNAME, DB_PASSWORD 환경변수를 지정합니다. 기본 DB는 localhost:3306/submate입니다.
-4. demo 프로필 없이 실행하고 팀 JWT 필터를 연결합니다.
+4. demo 프로필 없이 실행하면 병합된 JWT 필터를 사용합니다.
 5. Authentication.name=회원 이메일, 권한=ROLE_USER/ROLE_ADMIN 규약을 지킵니다.
-6. 실제 로그인 세션을 App에 전달합니다: `<App session={{accessToken,email,role}} onLogout={logout} />`.
+6. Frontend의 VITE_SUBMATE_DEMO를 제거하거나 false로 실행합니다. 외부 인증 화면에서 세션을 전달할 경우 기존 `<App session={{accessToken,email,role}} onLogout={logout} />` 규약도 유지합니다.
 7. 상품의 신청 링크는 /subscribe/{productId}입니다.
 
-현재 전역 SecurityConfig는 JWT 미구현 상태입니다.
-이번 API는 CurrentMember에서 인증/관리자 권한을 검증하지만, 전체 서비스 인증 완료를 의미하지 않습니다.
+현재 전역 SecurityConfig에는 JWT 필터가 연결되어 있습니다. 실제 MySQL 설치/마이그레이션과 전체 서비스 시연 검증은 별도로 확인해야 합니다.
 
 JPA 기본 DDL 정책은 validate입니다. 검토된 DDL을 먼저 적용해야 합니다.
 DB_DDL_AUTO로 개발 환경 설정을 변경할 수 있지만 자동 update만으로 FK/CHECK를 보장하지 않습니다.
@@ -89,6 +90,7 @@ npm run lint
 ## 문서
 
 - [프론트엔드 공통 스타일 가이드](docs/frontend-guide.md)
+- [김영훈 작업 순서와 진행 상태](docs/younghoon-work-plan.md)
 - [7일 작업 결과 / 인수인계](docs/week-1.md)
 - [API 명세](docs/api-spec.md)
 - [DB / ERD](docs/erd.md)

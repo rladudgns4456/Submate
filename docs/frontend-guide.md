@@ -141,3 +141,14 @@
 - `frontend/src/styles/subscriptions.css`: 현재 공통 UI와 구독 화면 스타일
 - `frontend/src/main.jsx`: 공통 기본 스타일 로딩
 - `docs/frontend-guide.md`: 이 문서. 노션 가이드와 규칙이 달라지면 함께 갱신
+
+## 9. 현재 연결된 공통 화면 — 2026-10-20
+
+- `/login`, `/signup`: 기존 회원 Backend에 연결하는 공통 폼. 비밀번호 확인/필수값·처리 중/성공·오류를 표시합니다.
+- `/products`: 기존 상품·카테고리 API의 조회 전용 결제 연결 화면. 상품 CRUD·정식 상세·강의 관리 화면을 대체하지 않습니다.
+- 로그인 성공: Backend의 token → /auth/me 조회 → 기존 App accessToken/email/role 세션으로 연결.
+- 비회원이 구독 신청을 누르면 로그인/회원가입 후 선택했던 결제 화면으로 복귀합니다.
+- 공통 UI 추가 클래스: `.auth-link`, `.auth-switch`, `.auth-help`, `.catalog-filter`, `.catalog-note`. 디자인 값은 기존 토큰을 사용합니다.
+- 토큰은 메모리에만 두며 새로고침 시 다시 로그인합니다. 실제 JWT Backend 변경 없이 연결합니다.
+
+강의·수강·진도 화면은 여전히 후속 작업입니다.

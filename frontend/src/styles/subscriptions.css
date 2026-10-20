@@ -757,3 +757,10 @@ textarea { font-size: var(--sm-font-md); }
 .page-heading { flex-wrap: wrap; }
 .page-heading > div { min-width: 0; }
 h1, h2, h3, dd { overflow-wrap: anywhere; }
+
+.auth-link { color: var(--sm-color-primary); font-weight: var(--sm-weight-semibold); }
+.auth-switch { margin-top: var(--sm-space-6); text-align: center; font-size: var(--sm-font-sm); }
+.auth-help { margin-top: calc(-1 * var(--sm-space-3)); margin-bottom: var(--sm-space-5); }
+.catalog-filter { margin-bottom: var(--sm-space-6); }
+.catalog-filter select { max-width: 320px; margin-bottom: 0; }
+.catalog-note { margin: var(--sm-space-4) 0 var(--sm-space-6); }

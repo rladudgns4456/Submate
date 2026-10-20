@@ -37,7 +37,11 @@ EXPIRED는 다시 처리하지 않으며, usable은 날짜로 별도 계산하�
 - context/AuthContext.jsx + authState.js: 세션과 데모 로그인
 - hooks/useResource.js: 로딩/오류/이전 응답 무시
 - pages/: 실제 화면, components/: 상태/페이지네이션
-- styles/subscriptions.css: 반응형 UI
+- styles/tokens.css: 팀 공통 색상·폰트·간격·모서리 토큰
+- index.css: 공통 기본 스타일 (main.jsx에서 로딩)
+- styles/subscriptions.css: 공통 UI 및 구독 화면 반응형 스타일
+
+팀 공통 규칙은 [프론트엔드 가이드](frontend-guide.md)를 따릅니다.
 
 JavaScript, React Router, 기존 Vite 구조를 유지합니다.
 서버는 요청마다 권한을 확인하므로 클라이언트 메뉴/라우트 제한만 신뢰하지 않습니다.

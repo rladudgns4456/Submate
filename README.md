@@ -89,6 +89,7 @@ npm run lint
 
 ## 문서
 
+- [프론트엔드 공통 스타일 가이드](docs/frontend-guide.md)
 - [7일 작업 결과 / 인수인계](docs/week-1.md)
 - [API 명세](docs/api-spec.md)
 - [DB / ERD](docs/erd.md)

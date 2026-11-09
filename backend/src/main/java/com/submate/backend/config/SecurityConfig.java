@@ -4,6 +4,7 @@ import com.submate.backend.member.auth.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,13 +45,19 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+        .requestMatchers(HttpMethod.GET,
+                "/", "/index.html", "/assets/**", "/favicon.svg", "/icons.svg",
+                "/login", "/signup", "/tracker", "/products", "/subscriptions", "/subscriptions/*",
+                "/subscribe/*", "/payment/result", "/payments", "/refunds", "/admin/subscriptions",
+                "/admin/subscriptions/*", "/admin/payments", "/admin/refunds"
+        ).permitAll()
         .requestMatchers(
                 "/api/auth/signup",
                 "/api/auth/login"
         ).permitAll()
 
         .requestMatchers(
-                org.springframework.http.HttpMethod.GET,
+                HttpMethod.GET,
                 "/api/categories",
                 "/api/products",
                 "/api/products/**"

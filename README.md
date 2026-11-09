@@ -31,6 +31,20 @@ React + Vite / Spring Boot / MySQL 기반의 외부 구독 통합 관리 서비�
 
 실제 인증 모드에서는 `/products`에서 상품을 선택한 뒤 `/login` 또는 `/signup`으로 연결됩니다. 로그인 응답의 `token`과 `/api/auth/me`를 공통 세션에 연결하며, 인증 정보는 메모리에만 보관합니다. 새로고침하면 다시 로그인합니다.
 
+## Railway 배포
+
+저장소 루트의 Dockerfile이 Vite 정적 파일과 Spring Boot API를 한 이미지로 빌드합니다. Railway에서 같은 프로젝트에 앱 서비스와 MySQL 서비스를 만들고, 앱의 저장소 루트를 빌드 대상으로 사용합니다.
+
+| 앱 서비스 환경 변수 | 값 |
+|---|---|
+| `DB_URL` | `jdbc:mysql://${{MySQL.MYSQLHOST}}:${{MySQL.MYSQLPORT}}/${{MySQL.MYSQLDATABASE}}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8` |
+| `DB_USERNAME` | `${{MySQL.MYSQLUSER}}` |
+| `DB_PASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
+| `JWT_SECRET` | 서버에서만 보관하는 32바이트 이상의 무작위 문자열 |
+| `VITE_GOOGLE_CLIENT_ID` | Gmail 가져오기를 켤 때 사용하는 Google OAuth 웹 클라이언트 ID |
+
+MySQL 서비스 이름이 다르면 변수의 `MySQL` 부분을 그 이름으로 바꿉니다. 앱 서비스에 공개 도메인을 생성하면 해당 주소에서 화면과 API를 함께 사용할 수 있습니다. MySQL은 프로젝트의 사설 네트워크로 연결합니다. 최초 실행에서 비어 있는 DB의 테이블을 만들고, 이후 시작 시 스키마를 검증합니다. 기존 DB를 연결할 때는 누락된 컬럼이 있으면 해당 마이그레이션을 먼저 적용합니다.
+
 ## 로컬 데모 실행
 
 Java 21, Node.js, npm이 필요합니다. PowerShell 터미널 2개를 사용합니다.

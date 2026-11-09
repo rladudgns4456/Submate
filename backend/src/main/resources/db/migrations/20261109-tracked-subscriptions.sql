@@ -1,4 +1,4 @@
-CREATE TABLE tracked_subscriptions (
+CREATE TABLE IF NOT EXISTS tracked_subscriptions (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT NOT NULL,
     name VARCHAR(100) NOT NULL,

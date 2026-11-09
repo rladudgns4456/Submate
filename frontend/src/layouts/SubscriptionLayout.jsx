@@ -7,17 +7,20 @@ export default function SubscriptionLayout() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <NavLink className="brand" to="/products">
+        <NavLink className="brand" to="/tracker">
           <span className="brand-symbol">s</span>SubMate
           <span className="brand-dot">.</span>
         </NavLink>
         <p className="nav-label">MY SPACE</p>
         <nav aria-label="사용자 메뉴">
+          <NavLink to="/tracker">
+            <span>◷</span>외부 구독 관리
+          </NavLink>
           <NavLink to="/products">
             <span>◈</span>구독 상품
           </NavLink>
           <NavLink to="/subscriptions">
-            <span>▦</span>내 구독
+            <span>▦</span>SubMate 구독
           </NavLink>
           <NavLink to="/payments">
             <span>▤</span>결제 내역

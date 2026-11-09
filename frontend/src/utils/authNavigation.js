@@ -6,6 +6,6 @@ export function afterLoginPath(path) {
     path.includes('\\') ||
     /^\/(login|signup)(?:[/?#]|$)/.test(path)
   )
-    return '/products'
+    return '/tracker'
   return path
 }

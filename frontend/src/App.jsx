@@ -1,8 +1,16 @@
-function App() {
+import { AuthProvider } from './context/AuthContext.jsx'
+import AppRouter from './routes/AppRouter'
+import './styles/subscriptions.css'
+
+function App({ session = null, onLogout }) {
   return (
-    <div>
-      <h1>SubMate</h1>
-    </div>
+    <AuthProvider
+      key={session?.accessToken || 'standalone'}
+      initialSession={session}
+      onLogout={onLogout}
+    >
+      <AppRouter />
+    </AuthProvider>
   )
 }
 

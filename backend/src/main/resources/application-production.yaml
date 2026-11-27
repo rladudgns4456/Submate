@@ -1,0 +1,21 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    url: ${DB_URL}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  sql:
+    init:
+      mode: always
+      schema-locations:
+        - classpath:db/demo-catalog.sql
+        - classpath:db/subscription-schema.sql
+        - classpath:db/migrations/20261109-tracked-subscriptions.sql
+
+jwt:
+  secret: ${JWT_SECRET}

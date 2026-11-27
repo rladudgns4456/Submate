@@ -112,6 +112,20 @@ async function receiptKey(messageId) {
   return 'gmail:' + hex
 }
 
+async function prepareReceipt({ messageId, ...receipt }) {
+  return { ...receipt, receiptId: await receiptKey(messageId) }
+}
+
+export function getDemoReceipt() {
+  return prepareReceipt(
+    parseReceipt({
+      id: 'submate-demo-google-play-receipt',
+      internalDate: Date.now(),
+      snippet: '항목: 샘플 독서 앱 7,900원 월간 구독',
+    })
+  )
+}
+
 export async function fetchGooglePlayReceipts(oauth, clientId, signal) {
   const token = await authorize(oauth, clientId)
 
@@ -145,10 +159,5 @@ export async function fetchGooglePlayReceipts(oauth, clientId, signal) {
     )
   )
   const receipts = messages.map(parseReceipt).filter(Boolean)
-  return Promise.all(
-    receipts.map(async ({ messageId, ...receipt }) => ({
-      ...receipt,
-      receiptId: await receiptKey(messageId),
-    }))
-  )
+  return Promise.all(receipts.map(prepareReceipt))
 }

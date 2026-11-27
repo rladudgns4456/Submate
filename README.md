@@ -54,7 +54,6 @@ Java 21, Node.js, npm이 필요합니다. PowerShell 터미널 2개를 사용합
 
 ```powershell
 cd backend
-$env:SUBMATE_DEMO_PASSWORD = Read-Host '데모 비밀번호 (12자 이상)'
 .\gradlew.bat bootRun --args='--spring.profiles.active=demo'
 ```
 
@@ -64,7 +63,7 @@ OneDrive/IDE가 build 폴더를 잠근 경우:
 .\gradlew.bat bootRun --args='--spring.profiles.active=demo' "-PsubmateBuildDir=$env:TEMP/submate-build"
 ```
 
-서버는 demo 프로필에서 127.0.0.1:8080으로만 실행됩니다.
+서버는 demo 프로필에서 127.0.0.1:8080으로만 실행됩니다. 기본 데모 비밀번호는 `1234`입니다. 다른 비밀번호를 사용하려면 실행 전에 `SUBMATE_DEMO_PASSWORD` 환경변수를 지정합니다.
 
 ### Frontend
 
@@ -75,13 +74,20 @@ $env:VITE_SUBMATE_DEMO = 'true'
 npm run dev -- --port 5173 --strictPort
 ```
 
-[SubMate 로컬 화면](http://127.0.0.1:5173)에서 계정을 선택하고 지정한 비밀번호로 로그인합니다.
+[SubMate 로컬 화면](http://127.0.0.1:5173)에서 계정을 선택하고 데모 비밀번호로 로그인합니다.
 
 | 계정 | 용도 |
 |---|---|
 | user@submate.test | 일반 회원 |
 | other@submate.test | 다른 회원 데이터 격리 확인 |
 | admin@submate.test | 관리자 |
+
+### 데모 시연 순서
+
+1. 일반 회원으로 로그인하면 외부 구독 대시보드에 샘플 구독 3건이 표시됩니다. 이번 달 예상 금액과 오늘 결제일 알림을 확인합니다.
+2. **구독 추가**로 직접 등록한 뒤 금액이나 상태를 수정하고, 대시보드에 반영되는지 확인합니다. 등록한 구독은 목록에서 삭제할 수 있습니다.
+3. **샘플 영수증 불러오기 → 내용 확인 → 저장**으로 Google 계정 없이 영수증 등록을 시연합니다. 같은 샘플을 다시 저장하면 중복 등록 안내가 표시됩니다.
+4. **구독 상품**에서 가상 결제를 진행하고 결제 내역에서 환불을 요청합니다. 관리자 계정으로 다시 로그인하면 **환불 관리**에서 요청을 처리할 수 있습니다.
 
 상품 1은 Cinema(월 12,900원), 상품 2는 Workspace(연 99,000원)입니다.
 실제 돈을 청구하지 않으며 카드번호/계좌번호를 받지 않습니다.

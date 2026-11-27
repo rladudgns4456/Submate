@@ -152,6 +152,7 @@ public AdminMemberResponse updateMemberForAdmin(
             member.getStatus()
     );
 }
+@Transactional
 public AdminMemberResponse withdrawMemberForAdmin(Long memberId) {
 
     Member member = memberRepository.findById(memberId)

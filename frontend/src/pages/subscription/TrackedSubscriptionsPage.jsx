@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { trackedSubscriptionApi as api } from '../../api/trackedSubscriptionApi'
 import { errorMessage } from '../../api/axios'
 import ResourceState from '../../components/common/ResourceState'
+import { isDemo } from '../../context/authState'
 import { useResource } from '../../hooks/useResource'
 import { money } from '../../utils/formatUtils'
 import GmailReceiptImport from './GmailReceiptImport'
@@ -183,7 +184,9 @@ export default function TrackedSubscriptionsPage() {
                       <th scope="row">
                         {item.name}
                         {item.imported && (
-                          <small className="tracker-source">Gmail</small>
+                          <small className="tracker-source">
+                            {isDemo ? 'Gmail 샘플' : 'Gmail'}
+                          </small>
                         )}
                       </th>
                       <td>{money(item.amount)}</td>

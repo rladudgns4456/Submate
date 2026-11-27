@@ -14,4 +14,4 @@ spring:
     init:
       mode: always
       schema-locations: classpath:db/demo-catalog.sql,classpath:db/subscription-schema.sql,classpath:db/migrations/20261109-tracked-subscriptions.sql
-      data-locations: classpath:db/demo-data.sql
+      data-locations: classpath:db/demo-data.sql,classpath:db/demo-tracked-subscriptions.sql

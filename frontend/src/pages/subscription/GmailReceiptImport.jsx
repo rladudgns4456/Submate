@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import {
   fetchGooglePlayReceipts,
+  getDemoReceipt,
   loadGoogleIdentity,
 } from '../../api/gmailReceipts'
+import { isDemo } from '../../context/authState'
 
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const clientId = isDemo ? undefined : import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 export default function GmailReceiptImport({ onChoose, disabled }) {
   const [oauth, setOauth] = useState(null)
@@ -38,11 +40,9 @@ export default function GmailReceiptImport({ onChoose, disabled }) {
     setError('')
     setReceipts(null)
     try {
-      const results = await fetchGooglePlayReceipts(
-        oauth,
-        clientId,
-        controller.signal
-      )
+      const results = isDemo
+        ? [await getDemoReceipt()]
+        : await fetchGooglePlayReceipts(oauth, clientId, controller.signal)
       if (!controller.signal.aborted) setReceipts(results)
     } catch (failure) {
       if (!controller.signal.aborted) setError(failure.message)
@@ -56,21 +56,26 @@ export default function GmailReceiptImport({ onChoose, disabled }) {
     <section className="panel tracker-panel">
       <h2>Gmail 영수증 불러오기</h2>
       <p className="muted">
-        최근 1년의 Google Play 구독 영수증을 최대 25건 확인합니다. 이미 관리하는
-        서비스가 있다면 기존 항목을 수정해 주세요.
+        {isDemo
+          ? 'Google 계정 없이 샘플 영수증의 내용을 확인하고 구독으로 등록할 수 있습니다.'
+          : '최근 1년의 Google Play 구독 영수증을 최대 25건 확인합니다. 이미 관리하는 서비스가 있다면 기존 항목을 수정해 주세요.'}
       </p>
-      {!clientId && (
+      {!isDemo && !clientId && (
         <p className="muted">
           이 환경에서 Google 계정 연결을 설정하면 사용할 수 있습니다.
         </p>
       )}
-      {clientId && (
+      {(isDemo || clientId) && (
         <button
           type="button"
-          disabled={!oauth || busy || disabled}
+          disabled={(!isDemo && !oauth) || busy || disabled}
           onClick={search}
         >
-          {busy ? '영수증 찾는 중…' : 'Google 계정 선택'}
+          {busy
+            ? '영수증 찾는 중…'
+            : isDemo
+              ? '샘플 영수증 불러오기'
+              : 'Google 계정 선택'}
         </button>
       )}
       {error && (

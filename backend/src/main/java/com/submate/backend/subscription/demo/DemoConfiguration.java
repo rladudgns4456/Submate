@@ -18,8 +18,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @Profile("demo")
 public class DemoConfiguration {
     @Bean
-    public UserDetailsService demoUsers(@Value("${SUBMATE_DEMO_PASSWORD}") String password) {
-        if (password.length() < 12) throw new IllegalArgumentException("SUBMATE_DEMO_PASSWORD는 12자 이상이어야 합니다.");
+    public UserDetailsService demoUsers(@Value("${SUBMATE_DEMO_PASSWORD:1234}") String password) {
+        if (password.length() < 4) throw new IllegalArgumentException("SUBMATE_DEMO_PASSWORD는 4자 이상이어야 합니다.");
         String encoded = new BCryptPasswordEncoder().encode(password);
         return new InMemoryUserDetailsManager(
                 User.withUsername("user@submate.test").password(encoded).roles("USER").build(),

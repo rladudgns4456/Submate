@@ -61,7 +61,7 @@ export default function AuthPage({ signup = false }) {
       <h1>{signup ? '회원가입' : '다시 만나서 반가워요'}</h1>
       <p className="muted">
         {signup
-          ? '계정을 만들고 원하는 상품을 구독하세요.'
+          ? '계정을 만들고 여러 서비스의 구독을 한곳에서 관리하세요.'
           : '로그인하고 내 구독과 이용 내역을 확인하세요.'}
       </p>
       {!signup && state?.registered && (

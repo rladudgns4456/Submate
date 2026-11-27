@@ -47,7 +47,7 @@ public class ProductService {
     public ProductResponse getProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("상품을 찾을 수 없습니다.")
+                        new ResourceNotFoundException("상품을 찾을 수 없습니다.")
                 );
 
         return toProductResponse(product);
@@ -69,7 +69,7 @@ public class ProductService {
     public ProductResponse createProduct(ProductRequest request) {
         Category category = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("카테고리를 찾을 수 없습니다.")
+                        new ResourceNotFoundException("카테고리를 찾을 수 없습니다.")
                 );
 
         Product product = new Product(
@@ -91,12 +91,12 @@ public class ProductService {
     ) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("상품을 찾을 수 없습니다.")
+                        new ResourceNotFoundException("상품을 찾을 수 없습니다.")
                 );
 
         Category category = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("카테고리를 찾을 수 없습니다.")
+                        new ResourceNotFoundException("카테고리를 찾을 수 없습니다.")
                 );
 
         product.update(
@@ -113,7 +113,7 @@ public class ProductService {
     public ProductResponse stopSellingProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("상품을 찾을 수 없습니다.")
+                        new ResourceNotFoundException("상품을 찾을 수 없습니다.")
                 );
 
         product.stopSelling();
@@ -143,8 +143,8 @@ public CategoryResponse updateCategory(
 ) {
     Category category = categoryRepository.findById(categoryId)
             .orElseThrow(() ->
-                    new IllegalArgumentException("카테고리를 찾을 수 없습니다.")
-            );
+                        new ResourceNotFoundException("카테고리를 찾을 수 없습니다.")
+        );
 
     if (!category.getName().equals(request.name())
             && categoryRepository.existsByName(request.name())) {
@@ -164,8 +164,8 @@ public void deleteCategory(Long categoryId) {
 
     Category category = categoryRepository.findById(categoryId)
             .orElseThrow(() ->
-                    new IllegalArgumentException("카테고리를 찾을 수 없습니다.")
-            );
+                new ResourceNotFoundException("카테고리를 찾을 수 없습니다.")
+        );
 
     if (!productRepository.findByCategory_CategoryId(categoryId).isEmpty()) {
         throw new IllegalArgumentException(

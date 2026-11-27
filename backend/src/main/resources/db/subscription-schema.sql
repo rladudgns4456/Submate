@@ -1,6 +1,6 @@
 -- MySQL 8 / H2 MySQL mode. members, products는 상대 도메인이 먼저 생성해야 한다.
 -- 최초 설치용 DDL. 기존 테이블이 있다면 별도 마이그레이션을 작성한다.
-CREATE TABLE subscriptions (
+CREATE TABLE IF NOT EXISTS subscriptions (
     subscription_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
@@ -11,14 +11,14 @@ CREATE TABLE subscriptions (
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NULL,
     version BIGINT NOT NULL DEFAULT 0,
+    INDEX idx_subscription_member (member_id, product_id, end_date),
+    INDEX idx_subscription_expiry (status, end_date),
     CONSTRAINT fk_subscription_member FOREIGN KEY(member_id) REFERENCES members(member_id),
     CONSTRAINT fk_subscription_product FOREIGN KEY(product_id) REFERENCES products(product_id),
     CONSTRAINT ck_subscription_status CHECK(status IN ('ACTIVE','CANCELLED','EXPIRED')),
     CONSTRAINT ck_subscription_dates CHECK(end_date >= start_date)
 );
-CREATE INDEX idx_subscription_member ON subscriptions(member_id,product_id,end_date);
-CREATE INDEX idx_subscription_expiry ON subscriptions(status,end_date);
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
     payment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     subscription_id BIGINT NOT NULL,
     member_id BIGINT NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE payments (
     CONSTRAINT ck_payment_method CHECK(payment_method IN ('CARD','BANK_TRANSFER')),
     CONSTRAINT ck_payment_status CHECK(status IN ('PENDING','COMPLETED','FAILED','REFUNDED'))
 );
-CREATE TABLE refunds (
+CREATE TABLE IF NOT EXISTS refunds (
     refund_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     payment_id BIGINT NOT NULL,
     amount DECIMAL(10,2) NOT NULL,

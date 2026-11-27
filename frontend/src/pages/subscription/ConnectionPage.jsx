@@ -64,7 +64,7 @@ export default function ConnectionPage() {
       <button className="primary full" disabled={busy}>
         {busy ? '확인 중…' : '로그인'}
       </button>
-      <p className="fine">서버 실행 시 지정한 데모 비밀번호를 사용합니다.</p>
+      <p className="fine">기본 데모 비밀번호는 1234입니다.</p>
     </form>
   )
 }

@@ -59,6 +59,7 @@ class SubscriptionFlowTests {
 
     @BeforeEach
     void resetData() {
+        jdbc.update("delete from tracked_subscriptions");
         jdbc.update("delete from refunds");
         jdbc.update("delete from payments");
         jdbc.update("delete from subscriptions");
@@ -98,6 +99,74 @@ class SubscriptionFlowTests {
         mvc.perform(get("/api/admin/payments").with(user("user@submate.test").roles("USER"))).andExpect(status().isForbidden());
         mvc.perform(get("/api/subscriptions").with(user("missing@submate.test"))).andExpect(status().isUnauthorized());
         mvc.perform(get("/api/admin/payments").with(user("user@submate.test").roles("ADMIN"))).andExpect(status().isForbidden());
+    }
+
+    @Test void tracksExternalSubscriptionsWithMonthEndRemindersAndMemberIsolation() throws Exception {
+        String path = "/api/tracked-subscriptions";
+        String input = """
+                {"name":"Streaming","amount":12900,"billingCycle":"MONTHLY",
+                 "billingDate":"2026-01-31","active":true,"reminderDays":3}
+                """;
+        var owner = user("user@submate.test");
+        var other = user("other@submate.test");
+        mvc.perform(get(path)).andExpect(status().isUnauthorized());
+        mvc.perform(post(path).with(owner).contentType("application/json")
+                .content(input.replace("12900", "12900.5"))).andExpect(status().isBadRequest());
+        var created = mvc.perform(post(path).with(owner).contentType("application/json").content(input))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.nextBillingDate").value("2026-01-31"))
+                .andExpect(jsonPath("$.reminderDue").value(true)).andReturn();
+        long id = number(created, "$.id");
+        clock.setDate("2026-02-25");
+        mvc.perform(get(path).with(owner)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.monthlyTotal").value(12900))
+                .andExpect(jsonPath("$.subscriptions[0].nextBillingDate").value("2026-02-28"))
+                .andExpect(jsonPath("$.subscriptions[0].reminderDue").value(true));
+        clock.setDate("2026-03-01");
+        mvc.perform(get(path).with(owner)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.subscriptions[0].nextBillingDate").value("2026-03-31"))
+                .andExpect(jsonPath("$.subscriptions[0].reminderDue").value(false));
+        mvc.perform(get(path).with(other)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.subscriptions").isEmpty());
+        mvc.perform(put(path + "/" + id).with(other).contentType("application/json").content(input))
+                .andExpect(status().isNotFound());
+        mvc.perform(delete(path + "/" + id).with(other)).andExpect(status().isNotFound());
+        mvc.perform(put(path + "/" + id).with(owner).contentType("application/json")
+                .content(input.replace("true", "false"))).andExpect(status().isOk());
+        mvc.perform(get(path).with(owner)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.monthlyTotal").value(0))
+                .andExpect(jsonPath("$.subscriptions[0].reminderDue").value(false));
+        mvc.perform(delete(path + "/" + id).with(owner)).andExpect(status().isNoContent());
+        mvc.perform(get(path).with(owner)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.subscriptions").isEmpty());
+        assertThat(subscriptionRepository.count()).isZero();
+        assertThat(paymentRepository.count()).isZero();
+    }
+
+    @Test void deduplicatesReceiptImportsPerMemberAndCalculatesAnnualLeapDay() throws Exception {
+        String path = "/api/tracked-subscriptions";
+        String input = """
+                {"receiptId":"gmail:%s","subscription":{"name":"Annual plan",
+                 "amount":49000,"billingCycle":"YEARLY","billingDate":"2024-02-29",
+                 "active":true,"reminderDays":0}}
+                """.formatted("a".repeat(64));
+        var owner = user("user@submate.test");
+        clock.setDate("2026-02-28");
+        mvc.perform(post(path + "/imports").with(owner).contentType("application/json").content(input))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.imported").value(true))
+                .andExpect(jsonPath("$.nextBillingDate").value("2026-02-28"));
+        mvc.perform(post(path + "/imports").with(owner).contentType("application/json").content(input))
+                .andExpect(status().isConflict());
+        mvc.perform(post(path + "/imports").with(user("other@submate.test"))
+                .contentType("application/json").content(input)).andExpect(status().isCreated());
+        clock.setDate("2028-02-01");
+        mvc.perform(get(path).with(owner)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.monthlyTotal").value(49000))
+                .andExpect(jsonPath("$.subscriptions[0].nextBillingDate").value("2028-02-29"));
+        clock.setDate("2028-03-01");
+        mvc.perform(get(path).with(owner)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.monthlyTotal").value(0));
     }
 
     @Test void successfulPaymentCreatesActiveSubscriptionWithServerPrice() throws Exception {

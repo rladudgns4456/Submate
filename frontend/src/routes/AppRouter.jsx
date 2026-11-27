@@ -10,6 +10,7 @@ import { useAuth } from '../hooks/useAuth'
 import SubscriptionLayout from '../layouts/SubscriptionLayout'
 import ConnectionPage from '../pages/subscription/ConnectionPage'
 import SubscriptionsPage from '../pages/subscription/SubscriptionsPage'
+import TrackedSubscriptionsPage from '../pages/subscription/TrackedSubscriptionsPage'
 import SubscriptionDetailPage from '../pages/subscription/SubscriptionDetailPage'
 import PaymentPage from '../pages/payment/PaymentPage'
 import PaymentResultPage from '../pages/payment/PaymentResultPage'
@@ -55,11 +56,12 @@ export default function AppRouter() {
               )
             }
           />
-          <Route index element={<Navigate to="/products" replace />} />
+          <Route index element={<Navigate to="/tracker" replace />} />
           <Route element={isDemo ? <PrivateRoute /> : <Outlet />}>
             <Route path="/products" element={<ProductSelectionPage />} />
           </Route>
           <Route element={<PrivateRoute />}>
+            <Route path="/tracker" element={<TrackedSubscriptionsPage />} />
             <Route
               path="/subscriptions"
               element={<SubscriptionsPage key="user" />}

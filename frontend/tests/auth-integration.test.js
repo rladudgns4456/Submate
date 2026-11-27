@@ -80,7 +80,7 @@ test('로그인 복귀는 앱 내부 경로만 허용하고 로그인/가입 순
     '/login?next=1',
     '/signup#form',
   ]) {
-    assert.equal(afterLoginPath(value), '/products')
+    assert.equal(afterLoginPath(value), '/tracker')
   }
   assert.equal(
     afterLoginPath('/subscribe/2?source=products'),
